@@ -1,23 +1,37 @@
-python
-mkdir EmotionDetection
-mv emotion_detection.py EmotionDetection/
-touch EmotionDetection/__init__.pynano EmotionDetection/__init__.pyfrom .emotion_detection import emotion_detector
-python3
-git add EmotionDetection/__init__.py EmotionDetection/emotion_detection.py
-git commit -m "Package application as EmotionDetection"
-git push origin main
-pwd
-ls
-ls EmotionDetectionmkdir -p EmotionDetection
-mv emotion_detection.py EmotionDetection/
-echo "from .emotion_detection import emotion_detector" > EmotionDetection/__init__.py
-git add EmotionDetection/__init__.py EmotionDetection/emotion_detection.py
-git commit -m "Add EmotionDetection package"
-git push origin main
-git status
-cd /home/project/final_project/oaqjp-final-project-emb-ai
-find . -maxdepth 2 -type f
-./EmotionDetection/__init__.py
-./EmotionDetection/emotion_detection.py
-ibm-developer-skills-network/oaqjp-final-project-emb-ai:main
+import requests
+import json
 
+def emotion_detector(text_to_analyze):
+    url = "https://sn-watson-emotion.labs.skills.network/v1/watson.runtime.nlp.v1/NlpService/EmotionPredict"
+
+    headers = {
+        "grpc-metadata-mm-model-id": "emotion_aggregated-workflow_lang_en_stock"
+    }
+
+    input_json = {
+        "raw_document": {
+            "text": text_to_analyze
+        }
+    }
+
+    response = requests.post(url, json=input_json, headers=headers)
+    formatted_response = json.loads(response.text)
+
+    emotions = formatted_response["emotionPredictions"][0]["emotion"]
+
+    anger = emotions["anger"]
+    disgust = emotions["disgust"]
+    fear = emotions["fear"]
+    joy = emotions["joy"]
+    sadness = emotions["sadness"]
+
+    dominant_emotion = max(emotions, key=emotions.get)
+
+    return {
+        'anger': anger,
+        'disgust': disgust,
+        'fear': fear,
+        'joy': joy,
+        'sadness': sadness,
+        'dominant_emotion': dominant_emotion
+    }
