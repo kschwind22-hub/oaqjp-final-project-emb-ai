@@ -1,1 +1,1 @@
-echo "# Final project" > README.md
+# Final project
